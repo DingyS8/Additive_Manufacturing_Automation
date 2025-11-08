@@ -15,8 +15,8 @@
               "state": {
                 "file": "Obsidian/Untitled.canvas",
                 "viewState": {
-                  "x": 448.9797059948584,
-                  "y": 184.6200680534062,
+                  "x": 1241.0928309269898,
+                  "y": 136.9980364943602,
                   "zoom": -0.6666666666666665
                 }
               },
@@ -28,16 +28,13 @@
             "id": "e925dbb2e64ff390",
             "type": "leaf",
             "state": {
-              "type": "release-notes",
-              "state": {
-                "currentVersion": "1.9.12"
-              },
-              "icon": "lucide-book-up",
-              "title": "Release Notes 1.9.12"
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -185,7 +182,7 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "e925dbb2e64ff390",
+  "active": "8e47c8199387aed8",
   "lastOpenFiles": [
     "src/Exemplo_Dash/Exemplo_Dashboard_css/assets/styles.css",
     "src/Exemplo_Dash/Exemplo_3DViewer/assets/style.css",
