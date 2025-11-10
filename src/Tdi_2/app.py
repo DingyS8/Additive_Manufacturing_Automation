@@ -49,11 +49,64 @@ LAST_STL_PATH = None
 main_layout = html.Main(
     className="frame",
     children=[
+        html.Div(
+            id="customer-modal",
+            className="customer-modal",
+            style={"display": "none"},
+            children=[
+                html.Div(id="customer-modal-backdrop", className="customer-modal-backdrop", n_clicks=0),
+                html.Div(
+                    className="customer-modal-card",
+                    children=[
+                        html.Div(
+                            [
+                                html.Div("Cadastro do cliente", className="modal-title"),
+                                html.Button("×", id="close-customer-modal", className="modal-close", n_clicks=0),
+                            ],
+                            className="customer-modal-header",
+                        ),
+                        html.Div(
+                            className="customer-form-grid",
+                            children=[
+                                html.Div([
+                                    html.Label("Nome completo", className="field-label"),
+                                    dcc.Input(id="customer-name", type="text", placeholder="Seu nome", className="field-input", maxLength=120),
+                                ], className="field-block"),
+                                html.Div([
+                                    html.Label("E-mail", className="field-label"),
+                                    dcc.Input(id="customer-email", type="email", placeholder="voce@email.com", className="field-input", maxLength=120),
+                                ], className="field-block"),
+                                html.Div([
+                                    html.Label("Telefone/WhatsApp", className="field-label"),
+                                    dcc.Input(id="customer-phone", type="text", placeholder="(11) 99999-0000", className="field-input", maxLength=20),
+                                ], className="field-block"),
+                                html.Div([
+                                    html.Label("CPF/CNPJ", className="field-label"),
+                                    dcc.Input(id="customer-doc", type="text", placeholder="Somente números", className="field-input", maxLength=20),
+                                ], className="field-block"),
+                                html.Div([
+                                    html.Label("Observações", className="field-label"),
+                                    dcc.Textarea(id="customer-notes", placeholder="Preferências, endereço, etc.", className="field-textarea", maxLength=500),
+                                ], className="field-block wide"),
+                            ],
+                        ),
+                        html.Div(id="customer-feedback", className="customer-feedback"),
+                        html.Div(
+                            className="modal-actions",
+                            children=[
+                                html.Button("Cancelar", id="cancel-customer-modal", className="btn ghost", n_clicks=0),
+                                html.Button("Salvar cadastro", id="btn-save-customer", className="btn", n_clicks=0),
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        ),
         html.Header(
             className="topbar",
             children=[
                 html.Div(APP_TITLE, id="brand", className="brand"),
-                html.Button(html.Div(className="hex"), className="hex-btn", title="Menu/Perfil"),
+                html.Button(html.Div(className="hex"), id="btn-profile", className="hex-btn", title="Cadastro do cliente"),
             ],
         ),
         html.Section(
@@ -149,6 +202,7 @@ main_layout = html.Main(
                 ),
                 html.Div(id="main-loading"),
                 dcc.Store(id="store-img", data=""),
+                dcc.Store(id="store-customer", data={}),
             ],
         ),
     ],
@@ -168,6 +222,64 @@ def show_main_loading(n):
             html.Div("Convertendo imagem para modelo 3D...", style={"marginTop": "12px", "fontSize": "1.1rem", "color": "#7c4dff"})
         ], className="main-spinner")
     return ""
+
+
+@app.callback(
+    Output("customer-modal", "style"),
+    Input("btn-profile", "n_clicks"),
+    Input("close-customer-modal", "n_clicks"),
+    Input("cancel-customer-modal", "n_clicks"),
+    Input("customer-modal-backdrop", "n_clicks"),
+    prevent_initial_call=True,
+)
+def toggle_customer_modal(open_clicks, close_clicks, cancel_clicks, backdrop_clicks):
+    trigger = ctx.triggered_id
+    if trigger == "btn-profile":
+        return {"display": "flex"}
+    return {"display": "none"}
+
+
+@app.callback(
+    Output("customer-feedback", "children"),
+    Output("store-customer", "data"),
+    Input("btn-save-customer", "n_clicks"),
+    State("customer-name", "value"),
+    State("customer-email", "value"),
+    State("customer-phone", "value"),
+    State("customer-doc", "value"),
+    State("customer-notes", "value"),
+    prevent_initial_call=True,
+)
+def save_customer_data(n, name, email, phone, doc, notes):
+    if not n:
+        return no_update, no_update
+    errors = []
+    name = (name or "").strip()
+    email = (email or "").strip()
+    phone_raw = "".join(filter(str.isdigit, (phone or "")))
+    doc_raw = "".join(filter(str.isdigit, (doc or "")))
+    notes = (notes or "").strip()
+
+    if len(name) < 3:
+        errors.append("Informe um nome válido.")
+    if not email or "@" not in email or "." not in email.split("@")[-1]:
+        errors.append("Informe um e-mail válido.")
+    if phone_raw and len(phone_raw) < 10:
+        errors.append("Telefone incompleto. Use DDD + número.")
+    if doc_raw and len(doc_raw) not in (0, 11, 14):
+        errors.append("CPF/CNPJ deve conter 11 ou 14 dígitos.")
+
+    if errors:
+        return html.Div([html.P(msg) for msg in errors], className="alert alert-error"), no_update
+
+    data = {
+        "name": name,
+        "email": email,
+        "phone": phone_raw,
+        "document": doc_raw,
+        "notes": notes,
+    }
+    return html.Div("Cadastro salvo com sucesso. Você já pode avançar para o carrinho e pagamentos.", className="alert alert-success"), data
 
 def stl_viewer_layout(stl_path):
     # Adiciona o novo CSS da visualização

@@ -1,0 +1,7 @@
+matplotlib
+dash==2.*
+dash-vtk==0.0.9
+flask>=2.2
+Pillow
+trimesh
+numpy
