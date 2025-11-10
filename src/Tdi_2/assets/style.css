@@ -1,3 +1,27 @@
+.main-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 220px;
+  gap: 18px;
+}
+.futuristic-spinner {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 4px solid rgba(120,180,255,.18);
+  border-top: 4px solid #7c4dff;
+  border-right: 4px solid #1ec6ff;
+  border-bottom: 4px solid #4fc3f7;
+  border-left: 4px solid #232b3a;
+  animation: spin-future 1.1s linear infinite;
+  box-shadow: 0 0 24px #7c4dff44, 0 0 8px #1ec6ff44;
+}
+@keyframes spin-future {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 :root{
   --bg-start:#141627; --bg-end:#0b0f2d;
   --text:#e8ecff; --muted:#a9b0c6;
