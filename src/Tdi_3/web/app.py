@@ -1,5 +1,6 @@
 import os
 from dash import Dash, html, dcc
+from dash.dependencies import Output, Input, State
 from flask import abort, send_from_directory
 from .services.storage import OUT_DIR, OUTPUTS_URL_BASE
 from .pages import loja, viewer, conta, admin
@@ -29,8 +30,8 @@ app.layout = html.Div([
 
 # roteador simples
 @app.callback(
-    dcc.Output("_pages", "children"),
-    dcc.Input("url", "pathname")
+    Output("_pages", "children"),
+    Input("url", "pathname")       # ✅ classe de dependência
 )
 def display_page(pathname):
     if pathname == "/visualizar":
