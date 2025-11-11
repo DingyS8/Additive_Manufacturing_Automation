@@ -1,7 +1,12 @@
-matplotlib
-dash==2.*
-dash-vtk==0.0.9
-flask>=2.2
-Pillow
+dash
+dash-vtk
+pillow
 trimesh
-numpy
+pymongo
+python-dotenv
+requests
+# opcionais (fila assíncrona):
+rq
+redis
+# PSP (boleto) se for integrar real:
+git+https://github.com/gerencianet/gn-api-sdk-python.git

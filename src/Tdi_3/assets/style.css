@@ -114,6 +114,29 @@ body{
 }
 .btn:hover{transform:translateY(-1px);box-shadow:0 10px 32px rgba(60,160,255,.25)}
 .btn.ghost{background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02))}
+.btn-with-loader{
+  display:inline-flex; align-items:center; gap:10px;
+}
+.btn-loader{
+  width:16px; height:16px;
+  border-radius:999px;
+  border:2px solid rgba(232,236,255,.35);
+  border-top-color:#fff;
+  margin-left:4px;
+  animation:btn-loader-spin .8s linear infinite;
+  opacity:0;
+  transition:opacity .15s ease-out;
+}
+#btn-3d-wrapper[data-dash-is-loading="true"] .btn-loader{
+  opacity:1;
+}
+#btn-3d-wrapper[data-dash-is-loading="true"] .btn-label{
+  opacity:.75;
+}
+@keyframes btn-loader-spin{
+  from{transform:rotate(0deg);}
+  to{transform:rotate(360deg);}
+}
 
 /* Preview única + botão X */
 .preview{margin:14px 0 6px}

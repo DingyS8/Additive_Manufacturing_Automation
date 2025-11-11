@@ -1,24 +1,20 @@
-import os, sys, shutil
-from PIL import Image
+import os, base64, uuid
 
-TRIPOSR_PATH = os.path.abspath(r"C:\Users\vinic\Desktop\GitHub\TripoSR")
-if TRIPOSR_PATH not in sys.path:
-    sys.path.insert(0, TRIPOSR_PATH)
+OUT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "outputs"))
+OUTPUTS_URL_BASE = "/outputs"
+os.makedirs(OUT_DIR, exist_ok=True)
 
-try:
-    from gradio_app import preprocess, generate
-except ImportError:
-    preprocess = None
-    generate = None
+def save_base64_image(data_url: str) -> str:
+    header, b64 = data_url.split(",", 1)
+    ext = header.split("/")[1].split(";")[0]  # png/jpg/jpeg
+    path = os.path.join(OUT_DIR, f"{uuid.uuid4().hex}.{ext}")
+    with open(path, "wb") as f:
+        f.write(base64.b64decode(b64))
+    return path
 
-def ensure_available():
-    if preprocess is None or generate is None:
-        raise RuntimeError("TripoSR não disponível. Verifique path/import.")
+def save_bytes(path: str, data: bytes):
+    with open(path, "wb") as f:
+        f.write(data)
 
-def image_to_obj(pil_img, out_path_obj, remove_bg=True, fg_ratio=0.85):
-    ensure_available()
-    pre = preprocess(pil_img, do_remove_background=remove_bg, foreground_ratio=fg_ratio)
-    obj_path, *_ = generate(pre, mc_resolution=320, formats=["obj"])
-    if obj_path != out_path_obj:
-        shutil.copyfile(obj_path, out_path_obj)
-    return out_path_obj
+def url_for_output(path: str) -> str:
+    return f"{OUTPUTS_URL_BASE}/{os.path.basename(path)}"
